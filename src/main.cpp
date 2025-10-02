@@ -1,5 +1,4 @@
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include <vector>
 
 std::vector<sf::RectangleShape> squares;
