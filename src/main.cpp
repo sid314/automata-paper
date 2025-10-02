@@ -140,7 +140,6 @@ int main()
                     sf::sleep(sf::seconds(5));
             }
         }
-
         window.clear(sf::Color(72, 72, 79));
 
         gen++;
