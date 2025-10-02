@@ -80,7 +80,7 @@ int main() {
   pause.setFillColor(sf::Color(49, 41, 64));
   pause.setPosition({1000, 30});
 
-  sf::Font font("./NataSans-VariableFont_wght.ttf");
+  sf::Font font("src/fonts/NataSans-VariableFont_wght.ttf");
   sf::Text generations(font);
   generations.setPosition({20, 50 - 15});
   generations.setString("Generations");
