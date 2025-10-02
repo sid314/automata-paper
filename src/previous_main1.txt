@@ -5,7 +5,7 @@
 std::vector<sf::RectangleShape> squares;
 std::vector<int> value;
 
-float division = 25;
+float division = 26;
 float space = 10;
 void createsq(float margin_left)
 {
@@ -37,7 +37,7 @@ void createsq(float margin_left)
 
 }
 
-void changePixel(int i = 0, int j = 0) //// toggles the pixel
+void changePixel(int i = 0, int j = 0)
 {
     if (value[i * division + j] == 0)
     {
@@ -51,35 +51,27 @@ void changePixel(int i = 0, int j = 0) //// toggles the pixel
     }
 
 }
-void fill(int i, int j)          //// fill the pixel
-{
-    value[i * division + j] = 1;
-    squares[i * division + j].setFillColor(sf::Color::Green);
-}
 
-void rule1()
+void rule1(int i, int j)
 {
-    std::vector<std::vector<int>> changers;
-    for (int i = 1; i < division - 1; i++)
+    for (int i = 2; i < division - 2; i++)
     {
-        for (int j = 1; j < division - 1; j++ )
+        for (int j = 2; j < division - 2; j++)
         {
-            if (value[i * division + j] == 1 && i != 0 && j != 0)
+            if (value[i * division + j] == 0 && i!=0 && j!=0)
             {
-                changers.push_back({i , j});
+                changePixel(i, j);
+                changePixel(i - 1, j);
+                changePixel(i + 1, j);
+                changePixel(i, j - 1);
+                changePixel(i, j + 1);
             }
+
         }
-    }
-    for (auto& c : changers)
-    {
-        changePixel(c[0], c[1]);
-        fill(c[0] - 1, c[1]);
-        fill(c[0] + 1, c[1]);
-        fill(c[0], c[1] - 1);
-        fill(c[0], c[1] + 1);
 
     }
 }
+
 
 int main()
 {
@@ -92,11 +84,6 @@ int main()
     sf::RectangleShape menu({ wWidth, 100 });
     menu.setFillColor(sf::Color(36, 36, 46));
 
-    sf::RectangleShape pause({ 170, 60 });
-    menu.setFillColor(sf::Color(36, 36, 46));
-    pause.setFillColor(sf::Color(49, 41, 64));
-    pause.setPosition({ 1000, 30 });
-
     sf::Font font("C:\\Users\\HP\\Desktop\\automata-paper\\src\\NataSans-VariableFont_wght.ttf");
 
     sf::Text generations(font);
@@ -105,26 +92,14 @@ int main()
     generations.setCharacterSize(30);
     generations.setFillColor(sf::Color::White);
 
-    sf::Text pauset(font);
-
-    pauset.setPosition({ 1020, 50 - 15 });
-    pauset.setString("pause 5s");
-    pauset.setCharacterSize(30);
-    pauset.setFillColor(sf::Color::White);
-
     int gen = 0;
     sf::Text gen_number(font);
     gen_number.setPosition({ 300, 50 - 15 });
     gen_number.setCharacterSize(30);
     gen_number.setFillColor(sf::Color::White);
 
-    createsq(100);
-    changePixel(12, 12);
-
     while (window.isOpen())
     {
-        sf::sleep(sf::milliseconds(1000));
-
         while (const std::optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>())
@@ -134,21 +109,16 @@ int main()
                 if (Keypressed->scancode == sf::Keyboard::Scancode::Escape)
                     window.close();
             }
-            else if (const auto* LmouseClick = event->getIf<sf::Event::MouseButtonPressed>())
-            {
-                if (LmouseClick->button == sf::Mouse::Button::Left)
-                    sf::sleep(sf::seconds(5));
-            }
         }
 
-        window.clear(sf::Color(72, 72, 79));
+        createsq(100);
+        changePixel(5, 5);
+        sf::sleep(sf::seconds(1));
 
+        window.clear(sf::Color(72, 72, 79));
         gen++;
         gen_number.setString(std::to_string(gen));
-
         window.draw(menu);
-        window.draw(pause);
-        window.draw(pauset);
         window.draw(generations);
         window.draw(gen_number);
         for (int i = 0; i < division; i++)
@@ -159,6 +129,6 @@ int main()
             }
         }
         window.display();
-        rule1();
+        rule1(5,5);
     }
 }
