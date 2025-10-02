@@ -43,29 +43,7 @@ void changePixel(int i = 0, int j = 0) //// toggles the pixel
         value[i * division + j] = 0;
         squares[i * division + j].setFillColor(sf::Color(49, 41, 64));
     }
-
-void changePixel(int i = 0, int j = 0) {
-  if (value[i * division + j] == 0) {
-    value[i * division + j] = 1;
-    squares[i * division + j].setFillColor(sf::Color::Green);
-  } else if (value[i * division + j] == 1) {
-    value[i * division + j] = 0;
-    squares[i * division + j].setFillColor(sf::Color(49, 41, 64));
-  }
 }
-
-void rule1(int i, int j) {
-  for (int i = 2; i < division - 2; i++) {
-    for (int j = 2; j < division - 2; j++) {
-      if (value[i * division + j] == 0 && i != 0 && j != 0) {
-        changePixel(i, j);
-        changePixel(i - 1, j);
-        changePixel(i + 1, j);
-        changePixel(i, j - 1);
-        changePixel(i, j + 1);
-      }
-    }
-  }
 void fill(int i, int j)          //// fill the pixel
 {
     value[i * division + j] = 1;
