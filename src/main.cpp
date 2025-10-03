@@ -15,6 +15,16 @@ public:
   // 1 = kill
   // 2 = bring to life
 };
+int maxlives = 15;
+int lives[50][50];
+
+void initLives() {
+  for (int i = 0; i < 50; i++) {
+    for (int j = 0; j < 50; j++) {
+      lives[i][j] = 0;
+    }
+  }
+}
 
 float division = 50;
 float space = 5;
@@ -50,6 +60,7 @@ void changePixel(int i = 0, int j = 0) {
   if (value[i * division + j] == 0) {
     value[i * division + j] = 1;
     squares[i * division + j].setFillColor(sf::Color::Green);
+    lives[i][j] = maxlives;
   } else if (value[i * division + j] == 1) {
     value[i * division + j] = 0;
     squares[i * division + j].setFillColor(sf::Color(49, 41, 64));
@@ -58,11 +69,13 @@ void changePixel(int i = 0, int j = 0) {
 void fill(int i, int j) {
   value[i * division + j] = 1;
   squares[i * division + j].setFillColor(sf::Color::Green);
+  lives[i][j] = maxlives;
 }
 
 void kill(int i, int j) {
   value[i * division + j] = 0;
   squares[i * division + j].setFillColor(sf::Color(49, 41, 64));
+  lives[i][j] = 0;
 }
 int makeNBD(int in, int jn) {
   std::vector<int> coll;
@@ -81,7 +94,7 @@ int makeNBD(int in, int jn) {
 
 void rule2() {
 
-  // sf::sleep(sf::milliseconds(500));
+  sf::sleep(sf::milliseconds(500));
   Cell cells[50][50];
 
   for (int i = 0; i < 50; i++) {
@@ -91,16 +104,19 @@ void rule2() {
   }
   for (int i = 1; i < division - 1; i++) {
     for (int j = 1; j < division - 1; j++) {
+      int life = lives[i][j];
       int state = cells[i][j].state;
 
       int aliveNeighbours = makeNBD(i, j);
-      if (aliveNeighbours < 2 || aliveNeighbours > 3) {
+      if (aliveNeighbours < 2 || aliveNeighbours > 3 || life < 1) {
         state = 1;
       }
       if (aliveNeighbours == 3) {
         state = 2;
       }
       cells[i][j].state = state;
+      life--;
+      lives[i][j] = life;
     }
   }
   for (int i = 1; i < division - 1; i++) {
@@ -117,6 +133,8 @@ void rule2() {
 }
 
 int main() {
+
+  initLives();
   const int wWidth = 1280;
   const int wHeight = 1280;
 
