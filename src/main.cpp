@@ -108,14 +108,29 @@ void rule2() {
       int state = cells[i][j].state;
 
       int aliveNeighbours = makeNBD(i, j);
-      if (aliveNeighbours < 2 || aliveNeighbours > 3 || life < 1) {
+      if (life < 1) {
         state = 1;
+      }
+      if (aliveNeighbours == 2 || aliveNeighbours == 4) {
+        life -= 2;
+      }
+      if (aliveNeighbours == 1 || aliveNeighbours == 5) {
+        life -= 3;
+      }
+      if (aliveNeighbours == 0 || aliveNeighbours == 6) {
+        life -= 4;
+      }
+      if (aliveNeighbours == 7) {
+        life -= 5;
+      }
+      if (aliveNeighbours == 8) {
+        life -= 6;
       }
       if (aliveNeighbours == 3) {
         state = 2;
+        life--;
       }
       cells[i][j].state = state;
-      life--;
       lives[i][j] = life;
     }
   }
