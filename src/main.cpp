@@ -8,6 +8,11 @@ std::vector<int> value;
 std::vector<int> valueCopy;
 std::vector<int> lifeSpan;
 
+class Cell {
+public:
+  int state;
+};
+
 float division = 50;
 float space = 5;
 void createsq(float margin_left) {
@@ -72,6 +77,8 @@ int makeNBD(int in, int jn) {
 }
 
 void rule2() {
+
+  Cell cells[50][50];
   std::vector<std::vector<int>> changers;
   for (int i = 1; i < division - 1; i++) {
     for (int j = 1; j < division - 1; j++) {
@@ -86,7 +93,7 @@ void rule2() {
       if (makeNBD(i, j) < 2 || makeNBD(i, j) > 3) {
         for (int k = 0; k < changers.size(); k++) {
           if (i != changers[k][0] && j != changers[k][1]) {
-            kill(i, j);
+            cells[i][j].state = 1;
           }
         }
       }
@@ -94,12 +101,18 @@ void rule2() {
           j != 0) {
         for (int k = 0; k < changers.size(); k++) {
         }
-        fill(i, j);
+        cells[i][j].state = 0;
       }
     }
   }
   for (int i = 1; i < division - 1; i++) {
     for (int j = 1; j < division - 1; j++) {
+      if (cells[i][j].state == 1) {
+        kill(i, j);
+
+      } else {
+        fill(i, j);
+      }
     }
   }
 }
