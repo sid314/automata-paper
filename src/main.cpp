@@ -11,6 +11,9 @@ std::vector<int> lifeSpan;
 class Cell {
 public:
   int state;
+  // 0 = dont do anything
+  // 1 = kill
+  // 2 = bring to life
 };
 
 float division = 50;
@@ -78,31 +81,26 @@ int makeNBD(int in, int jn) {
 
 void rule2() {
 
+  // sf::sleep(sf::milliseconds(500));
   Cell cells[50][50];
-  std::vector<std::vector<int>> changers;
+
+  for (int i = 0; i < 50; i++) {
+    for (int j = 0; j < 50; j++) {
+      cells[i][j].state = 0;
+    }
+  }
   for (int i = 1; i < division - 1; i++) {
     for (int j = 1; j < division - 1; j++) {
+      int state = cells[i][j].state;
 
-      if (value[i * division + j] == 1 && i != 0 && j != 0) {
-        changers.push_back({i, j});
-        lifeSpan[i * division + j]--;
-        if (lifeSpan[i * division + j] <= 0) {
-        }
+      int aliveNeighbours = makeNBD(i, j);
+      if (aliveNeighbours < 2 || aliveNeighbours > 3) {
+        state = 1;
       }
-
-      if (makeNBD(i, j) < 2 || makeNBD(i, j) > 3) {
-        for (int k = 0; k < changers.size(); k++) {
-          if (i != changers[k][0] && j != changers[k][1]) {
-            cells[i][j].state = 1;
-          }
-        }
+      if (aliveNeighbours == 3) {
+        state = 2;
       }
-      if (value[i * division + j] == 0 && makeNBD(i, j) == 3 && i != 0 &&
-          j != 0) {
-        for (int k = 0; k < changers.size(); k++) {
-        }
-        cells[i][j].state = 0;
-      }
+      cells[i][j].state = state;
     }
   }
   for (int i = 1; i < division - 1; i++) {
@@ -110,7 +108,8 @@ void rule2() {
       if (cells[i][j].state == 1) {
         kill(i, j);
 
-      } else {
+      } else if (cells[i][j].state == 2) {
+
         fill(i, j);
       }
     }
