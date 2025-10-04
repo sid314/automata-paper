@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 std::vector<sf::RectangleShape> squares;
 std::vector<std::vector<int>> coordinates;
@@ -94,7 +95,7 @@ int makeNBD(int in, int jn) {
 
 void rule2() {
 
-  sf::sleep(sf::milliseconds(500));
+  // sf::sleep(sf::milliseconds(500));
   Cell cells[50][50];
 
   for (int i = 0; i < 50; i++) {
@@ -132,6 +133,8 @@ void rule2() {
   }
 }
 
+
+
 int main() {
 
   initLives();
@@ -149,7 +152,7 @@ int main() {
   pause.setFillColor(sf::Color(49, 41, 64));
   pause.setPosition({1000, 30});
 
-  sf::Font font("src/fonts/NataSans-VariableFont_wght.ttf");
+  sf::Font font("C:\\Users\\HP\\Desktop\\New folder (2)\\automata-paper\\src\\fonts\\NataSans-VariableFont_wght.ttf");
   sf::Text generations(font);
   generations.setPosition({20, 50 - 15});
   generations.setString("Generations");
@@ -173,13 +176,11 @@ int main() {
   gen_number.setFillColor(sf::Color::White);
 
   createsq(100);
-  changePixel(12, 12);
-  changePixel(13, 12);
-  changePixel(11, 12);
+
 
   std::cout << makeNBD(12, 11);
   while (window.isOpen()) {
-    sf::sleep(sf::milliseconds(10));
+    sf::sleep(sf::milliseconds(100));
 
     while (const std::optional event = window.pollEvent()) {
       if (event->is<sf::Event::Closed>())
@@ -208,5 +209,11 @@ int main() {
     }
     rule2();
     window.display();
+    if (gen == 10 || gen == 50)
+    {
+      sf::sleep(sf::seconds(14));
+    }
+    // sf::sleep(sf::seconds(14));
+
   }
 }
