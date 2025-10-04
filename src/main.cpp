@@ -134,24 +134,28 @@ void rule2()
             int state = cells[i][j].state;
 
       int aliveNeighbours = makeNBD(i, j);
-      if (life < 1) {
+      if (aliveNeighbours < 2 || aliveNeighbours > 4)
+      {
         state = 1;
       }
-      if (aliveNeighbours == 2 || aliveNeighbours == 4) {
-        life -= 2;
-      }
-      if (aliveNeighbours == 1 || aliveNeighbours == 5) {
-        life -= 3;
-      }
-      if (aliveNeighbours == 0 || aliveNeighbours == 6) {
-        life -= 4;
-      }
-      if (aliveNeighbours == 7) {
-        life -= 5;
-      }
-      if (aliveNeighbours == 8) {
-        life -= 6;
-      }
+      // if (life < 1) {
+      //   state = 1;
+      // }
+      // if (aliveNeighbours == 2 || aliveNeighbours == 4) {
+      //   life -= 2;
+      // }
+      // if (aliveNeighbours == 1 || aliveNeighbours == 5) {
+      //   life -= 3;
+      // }
+      // if (aliveNeighbours == 0 || aliveNeighbours == 6) {
+      //   life -= 4;
+      // }
+      // if (aliveNeighbours == 7) {
+      //   life -= 5;
+      // }
+      // if (aliveNeighbours == 8) {
+      //   life -= 6;
+      // }
       if (aliveNeighbours == 3) {
         state = 2;
         life--;
@@ -252,12 +256,12 @@ int main()
 
     createsq(100);
 
-    pattern("C:\\Users\\HP\\Desktop\\New folder (2)\\automata-paper\\src\\try.txt", 4);
+    pattern("C:\\Users\\HP\\Desktop\\New folder (2)\\automata-paper\\src\\try.txt", 3);
 
     std::cout << makeNBD(12, 11);
     while (window.isOpen())
     {
-        sf::sleep(sf::milliseconds(1000));
+        // sf::sleep(sf::milliseconds(1));
 
         while (const std::optional event = window.pollEvent())
         {
@@ -292,9 +296,9 @@ int main()
         }
         rule2();
         window.display();
-         //if (gen == 9 || gen == 10 || gen == 42)
-         //{
-         //  sf::sleep(sf::seconds(14));
-         //}
+         if (gen == 1 /*|| gen == 10 || gen == 42*/)
+         {
+          sf::sleep(sf::seconds(14));
+         }
     }
 }
