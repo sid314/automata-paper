@@ -2,37 +2,12 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include <conio.h>
 
 std::vector<sf::RectangleShape> squares;
 std::vector<std::vector<int>> coordinates;
 std::vector<int> value;
-std::vector<int> valueCopy;
-std::vector<int> lifeSpan;
 
-class Cell
-{
-public:
-    int state;
-    // 0 = dont do anything
-    // 1 = kill
-    // 2 = bring to life
-};
-int maxlives = 15;
-int lives[16][16];
-
-void initLives()
-{
-    for (int i = 0; i < 16; i++)
-    {
-        for (int j = 0; j < 16; j++)
-        {
-            lives[i][j] = 0;
-        }
-    }
-}
-
-float division = 16;
+float division = 8;
 float space = 2;
 bool classicUI = false;
 void createsq(float margin_left)
@@ -61,7 +36,6 @@ void createsq(float margin_left)
         {
             squares.push_back(sq);
             value.push_back(v);
-            lifeSpan.push_back(two);
             coordinates.push_back({i, j});
         }
     }
@@ -90,8 +64,6 @@ void changePixel(int i = 0, int j = 0)
         {
             squares[i * division + j].setFillColor(sf::Color::White);
         }
-
-        lives[i][j] = maxlives;
     }
     else if (value[i * division + j] == 1)
     {
@@ -117,7 +89,12 @@ void fill(int i, int j)
     {
         squares[i * division + j].setFillColor(sf::Color::Black);
     }
-    lives[i][j] = maxlives;
+}
+
+void fill_color(int i, int j, int R, int G, int B, float A)
+{
+    // value[i * division + j] = 1;
+    squares[i * division + j].setFillColor(sf::Color(R, G, B, A));
 }
 
 void kill(int i, int j)
@@ -131,8 +108,6 @@ void kill(int i, int j)
     {
         squares[i * division + j].setFillColor(sf::Color::White);
     }
-
-    lives[i][j] = 0;
 }
 int makeNBD(int in, int jn)
 {
@@ -154,83 +129,66 @@ int makeNBD(int in, int jn)
     return coll.size();
 }
 
-void rule2()
+void Show_Moore_NBD()
 {
+    int neightbours[8] = {1, 2, 3, 4, 5, 6, 7, 8};
 
-    // sf::sleep(sf::milliseconds(500));
-    Cell cells[16][16];
-
-    for (int i = 0; i < 16; i++)
-    {
-        for (int j = 0; j < 16; j++)
-        {
-            cells[i][j].state = 0;
-        }
-    }
     for (int i = 1; i < division - 1; i++)
     {
         for (int j = 1; j < division - 1; j++)
         {
-            int life = lives[i][j];
-            int state = cells[i][j].state;
-
-            int aliveNeighbours = makeNBD(i, j);
-            if (aliveNeighbours < 2)
+            for (auto &n : neightbours)
             {
-                state = 1;
-            }
-            if (aliveNeighbours > 3)
-            {
-                state = 1;
-            }
-            // if (life < 1)
-            // {
-            //     state = 1;
-            // }
-            // if (aliveNeighbours == 2 || aliveNeighbours == 4)
-            // {
-            //     life -= 2;
-            // }
-            // if (aliveNeighbours == 1 || aliveNeighbours == 5)
-            // {
-            //     life -= 3;
-            // }
-            // if (aliveNeighbours == 0 || aliveNeighbours == 6)
-            // {
-            //     life -= 4;
-            // }
-            // if (aliveNeighbours == 7)
-            // {
-            //     life -= 5;
-            // }
-            // if (aliveNeighbours == 8)
-            // {
-            //     life -= 6;
-            // }
-            if (aliveNeighbours == 3)
-            {
-                state = 2;
-                // life--;
-            }
-            cells[i][j].state = state;
-            // lives[i][j] = life;
-        }
-    }
-    for (int i = 1; i < division - 1; i++)
-    {
-        for (int j = 1; j < division - 1; j++)
-        {
-            if (cells[i][j].state == 1)
-            {
-                kill(i, j);
-            }
-            else if (cells[i][j].state == 2)
-            {
-                fill(i, j);
+                if (makeNBD(i, j) == n /*&& value[i * division + j] == 1*/)
+                {
+                    if (classicUI == true)
+                    {
+                        fill_color(i, j, 0, 255, 0, 20 * n);
+                    }
+                    else
+                    {
+                        fill_color(i, j, 0, 0, 0, 30 * n);
+                    }
+                }
+                if (value[i * division + j] == 1)
+                {
+                    fill(i, j);
+                }
             }
         }
     }
 }
+
+
+void Show_Moore_NBD_specific(int in, int jn)
+{
+    int neightbours[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+
+    for (int i = in - 1; i < in + 2; i++)
+    {
+        for (int j = jn - 1; j < jn + 2; j++)
+        {
+            for (auto &n : neightbours)
+            {
+                // if (makeNBD(i, j) == n /*&& value[i * division + j] == 1*/)
+                    if (classicUI == true)
+                    {
+                        fill_color(i, j, 0, 255, 0, 20);
+                    }
+                    else
+                    {
+                        fill_color(i, j, 0, 0, 0, 30);
+                    }
+
+                if (value[i * division + j] == 1)
+                {
+                    fill(i, j);
+                }
+            }
+        }
+    }
+}
+
 std::fstream fs;
 void pattern(std::string filename, int rows = 4)
 {
@@ -256,11 +214,11 @@ void pattern(std::string filename, int rows = 4)
 
         if (seed[i] == "0")
         {
-            kill(division /2 + succeser - ((seed.size() / rows) / 2), division /2 + y - rows / 2);
+            kill(4 + succeser - ((seed.size() / rows) / 2), 4 + y - rows / 2);
         }
         else if (seed[i] == "1")
         {
-            fill(division /2 + succeser - ((seed.size() / rows) / 2), division /2 + y - rows / 2);
+            fill(4 + succeser - ((seed.size() / rows) / 2), 4 + y - rows / 2);
         }
         std::cout << seed[i];
     }
@@ -268,8 +226,6 @@ void pattern(std::string filename, int rows = 4)
 
 int main()
 {
-
-    initLives();
     const int wWidth = 1280;
     const int wHeight = 1280;
 
@@ -315,7 +271,7 @@ int main()
     // std::cout << makeNBD(12, 11);
     while (window.isOpen())
     {
-        sf::sleep(sf::milliseconds(1000));
+        sf::sleep(sf::milliseconds(100));
 
         while (const std::optional event = window.pollEvent())
         {
@@ -326,8 +282,7 @@ int main()
                 if (Keypressed->scancode == sf::Keyboard::Scancode::Escape)
                     window.close();
             }
-            else if (const auto *LmouseClick =
-                         event->getIf<sf::Event::MouseButtonPressed>())
+            else if (const auto *LmouseClick = event->getIf<sf::Event::MouseButtonPressed>())
             {
                 if (LmouseClick->button == sf::Mouse::Button::Left)
                     sf::sleep(sf::seconds(5));
@@ -356,11 +311,7 @@ int main()
                 window.draw(squares[i * division + j]);
             }
         }
-        rule2();
+        Show_Moore_NBD_specific(4,4);
         window.display();
-         if (gen == 1 /*|| gen == 15 || gen == 16 */)
-         {
-          sf::sleep(sf::seconds(8));
-         }
     }
 }

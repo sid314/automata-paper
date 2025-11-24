@@ -19,22 +19,22 @@ public:
     // 2 = bring to life
 };
 int maxlives = 15;
-int lives[16][16];
+int lives[80][80];
 
 void initLives()
 {
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < 80; i++)
     {
-        for (int j = 0; j < 16; j++)
+        for (int j = 0; j < 80; j++)
         {
             lives[i][j] = 0;
         }
     }
 }
 
-float division = 16;
+float division = 80;
 float space = 2;
-bool classicUI = false;
+bool classicUI = true;
 void createsq(float margin_left)
 {
 
@@ -158,11 +158,11 @@ void rule2()
 {
 
     // sf::sleep(sf::milliseconds(500));
-    Cell cells[16][16];
+    Cell cells[80][80];
 
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < 80; i++)
     {
-        for (int j = 0; j < 16; j++)
+        for (int j = 0; j < 80; j++)
         {
             cells[i][j].state = 0;
         }
@@ -175,45 +175,41 @@ void rule2()
             int state = cells[i][j].state;
 
             int aliveNeighbours = makeNBD(i, j);
-            if (aliveNeighbours < 2)
-            {
-                state = 1;
-            }
-            if (aliveNeighbours > 3)
-            {
-                state = 1;
-            }
-            // if (life < 1)
-            // {
+            //   if (aliveNeighbours < 2 || aliveNeighbours > 3)
+            //   {
             //     state = 1;
-            // }
-            // if (aliveNeighbours == 2 || aliveNeighbours == 4)
-            // {
-            //     life -= 2;
-            // }
-            // if (aliveNeighbours == 1 || aliveNeighbours == 5)
-            // {
-            //     life -= 3;
-            // }
-            // if (aliveNeighbours == 0 || aliveNeighbours == 6)
-            // {
-            //     life -= 4;
-            // }
-            // if (aliveNeighbours == 7)
-            // {
-            //     life -= 5;
-            // }
-            // if (aliveNeighbours == 8)
-            // {
-            //     life -= 6;
-            // }
+            //   }
+            if (life < 1)
+            {
+                state = 1;
+            }
+            if (aliveNeighbours == 2 || aliveNeighbours == 4)
+            {
+                life -= 2;
+            }
+            if (aliveNeighbours == 1 || aliveNeighbours == 5)
+            {
+                life -= 3;
+            }
+            if (aliveNeighbours == 0 || aliveNeighbours == 6)
+            {
+                life -= 4;
+            }
+            if (aliveNeighbours == 7)
+            {
+                life -= 5;
+            }
+            if (aliveNeighbours == 8)
+            {
+                life -= 6;
+            }
             if (aliveNeighbours == 3)
             {
                 state = 2;
-                // life--;
+                life--;
             }
             cells[i][j].state = state;
-            // lives[i][j] = life;
+            lives[i][j] = life;
         }
     }
     for (int i = 1; i < division - 1; i++)
@@ -226,6 +222,7 @@ void rule2()
             }
             else if (cells[i][j].state == 2)
             {
+
                 fill(i, j);
             }
         }
@@ -256,11 +253,11 @@ void pattern(std::string filename, int rows = 4)
 
         if (seed[i] == "0")
         {
-            kill(division /2 + succeser - ((seed.size() / rows) / 2), division /2 + y - rows / 2);
+            kill(40 + succeser - ((seed.size() / rows) / 2), 40 + y - rows / 2);
         }
         else if (seed[i] == "1")
         {
-            fill(division /2 + succeser - ((seed.size() / rows) / 2), division /2 + y - rows / 2);
+            fill(40 + succeser - ((seed.size() / rows) / 2), 40 + y - rows / 2);
         }
         std::cout << seed[i];
     }
@@ -310,12 +307,12 @@ int main()
 
     createsq(100);
 
-    pattern("C:\\Users\\HP\\Desktop\\New folder (2)\\automata-paper\\src\\try.txt", 6);
+    pattern("C:\\Users\\HP\\Desktop\\New folder (2)\\automata-paper\\src\\try.txt", 35);
 
     // std::cout << makeNBD(12, 11);
     while (window.isOpen())
     {
-        sf::sleep(sf::milliseconds(1000));
+        sf::sleep(sf::milliseconds(100));
 
         while (const std::optional event = window.pollEvent())
         {
@@ -358,9 +355,9 @@ int main()
         }
         rule2();
         window.display();
-         if (gen == 1 /*|| gen == 15 || gen == 16 */)
-         {
-          sf::sleep(sf::seconds(8));
-         }
+        //  if (gen == 1 /*|| gen == 10 || gen == 42*/)
+        //  {
+        //   sf::sleep(sf::seconds(14));
+        //  }
     }
 }
